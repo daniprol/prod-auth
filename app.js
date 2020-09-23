@@ -2,6 +2,8 @@ const express = require("express");
 const morgan = require("morgan");
 const createError = require("http-errors");
 require("dotenv").config(); // We just need this!
+// After defining the dotenv config we can require the database:
+require("./helpers/database");
 
 // Import routes
 const authRouter = require("./routes/Auth.route");
