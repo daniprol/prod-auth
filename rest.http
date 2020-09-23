@@ -1,6 +1,16 @@
 GET http://localhost:3000
 
-
-###
-
+### 404 error
 GET http://localhost:3000/abc_xyz
+
+### Login route
+POST http://localhost:3000/auth/login
+
+### Register route
+POST http://localhost:3000/auth/register
+
+### Refresh token route
+POST http://localhost:3000/auth/refresh-token
+
+### Logout route
+DELETE http://localhost:3000/auth/logout
