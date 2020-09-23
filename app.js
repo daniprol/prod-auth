@@ -8,6 +8,9 @@ const authRouter = require("./routes/Auth.route");
 
 const app = express();
 
+// Middleware:
+app.use(morgan("dev"));
+
 app.get("/", (req, res) => {
   res.send("Response from the server");
 });
