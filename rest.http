@@ -11,7 +11,7 @@ POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-    "email": "daniprol@hotmail.com",
+    "email": "daniProl",
     "password": "1234"
 }
 ### Refresh token route
