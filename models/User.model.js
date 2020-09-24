@@ -35,6 +35,16 @@ userSchema.pre("save", async function (next) {
   }
 });
 
+// methods and not statics!!!
+userSchema.methods.isValidPassword = async function (password) {
+  try {
+    return await bcrypt.compare(password, this.password); // THIS RETURNS A BOOLEAN ALREADY
+  } catch (error) {
+    // THIS IS NOT A MIDDLEWARE SO WE CAN'T USE NEXT(), WE NEED TO JUST THROW A NORMAL ERROR
+    throw error;
+  }
+};
+
 // We can't use arrow functions here so we can use the 'this' keyword
 // userSchema.post('save', async function(next) {
 //   try{

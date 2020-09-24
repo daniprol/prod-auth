@@ -14,7 +14,9 @@ module.exports = {
       };
       jwt.sign(payload, secret, options, (err, token) => {
         if (err) {
-          return reject(err);
+          console.log(err.message);
+          //   return reject(err);
+          return reject(createError.InternalServerError()); // We don't want to send the client the error message so we create a 'custom' one to show
         }
         resolve(token); // We send back the token
       });

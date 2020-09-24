@@ -35,7 +35,25 @@ router.post("/register", async (req, res, next) => {
 });
 
 router.post("/login", async (req, res, next) => {
-  res.send("Login POST route");
+  // res.send("Login POST route");
+  try {
+    const validationResult = await authSchema.validateAsync(req.body);
+    const user = await User.findOne({ email: validationResult.email });
+    if (!user) throw createError.NotFound("User is not registered");
+    console.log(validationResult);
+
+    // We are using a .method and not .statics so we need to use 'user' instead of 'User'
+    const isMatch = await user.isValidPassword(validationResult.password);
+    if (!isMatch)
+      throw createError.Unauthorized("Username/Password is not valid");
+
+    const accessToken = await signAccessToken(user.id);
+    res.send({ accessToken });
+  } catch (error) {
+    if (error.isJoi)
+      return next(createError.BadRequest("Invalid username/password"));
+    next(error);
+  }
 });
 
 router.post("/refresh-token", async (req, res, next) => {
