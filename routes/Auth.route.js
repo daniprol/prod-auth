@@ -3,6 +3,7 @@ const router = express.Router();
 const createError = require("http-errors");
 const User = require("../models/User.model");
 const { authSchema } = require("../helpers/validation_schema");
+const { signAccessToken } = require("../helpers/jwt_helper");
 
 router.post("/register", async (req, res, next) => {
   try {
@@ -20,7 +21,11 @@ router.post("/register", async (req, res, next) => {
     // const user = new User({ email:result.email, password: result.password });
     const user = new User(result);
     const savedUser = await user.save();
-    res.send(savedUser); // Don't we need to send some JSON????
+    const accessToken = await signAccessToken(savedUser.id);
+    // res.send(savedUser); // Don't we need to send some JSON????
+    console.log(savedUser);
+    console.log("JWT Token", accessToken);
+    res.send({ accessToken }); // Don't we need to send some JSON????
   } catch (error) {
     // We need to check if the erro is coming from joi
     if (error.isJoi === true) error.status = 422; // Otherwise it will send a 500 (interal server error) error
