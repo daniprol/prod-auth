@@ -3,7 +3,7 @@ const router = express.Router();
 const createError = require("http-errors");
 const User = require("../models/User.model");
 const { authSchema } = require("../helpers/validation_schema");
-const { signAccessToken } = require("../helpers/jwt_helper");
+const { signAccessToken, signRefreshToken } = require("../helpers/jwt_helper");
 
 router.post("/register", async (req, res, next) => {
   try {
@@ -22,13 +22,15 @@ router.post("/register", async (req, res, next) => {
     const user = new User(result);
     const savedUser = await user.save();
     const accessToken = await signAccessToken(savedUser.id);
+    const refreshToken = await signRefreshToken(savedUser.id);
+
     // res.send(savedUser); // Don't we need to send some JSON????
     console.log(savedUser);
     console.log("JWT Token", accessToken);
-    res.send({ accessToken }); // Don't we need to send some JSON????
+    res.send({ accessToken, refreshToken }); // Don't we need to send some JSON????
   } catch (error) {
     // We need to check if the erro is coming from joi
-    if (error.isJoi === true) error.status = 422; // Otherwise it will send a 500 (interal server error) error
+    if (error.isJoi) error.status = 422; // Otherwise it will send a 500 (interal server error) error
     next(error);
   }
   // res.send("Register POST route");
@@ -48,7 +50,8 @@ router.post("/login", async (req, res, next) => {
       throw createError.Unauthorized("Username/Password is not valid");
 
     const accessToken = await signAccessToken(user.id);
-    res.send({ accessToken });
+    const refreshToken = await signRefreshToken(user.id);
+    res.send({ accessToken, refreshToken });
   } catch (error) {
     if (error.isJoi)
       return next(createError.BadRequest("Invalid username/password"));
@@ -64,4 +67,5 @@ router.post("/refresh-token", async (req, res, next) => {
 router.delete("/logout", async (req, res, next) => {
   res.send("Logout route");
 });
+
 module.exports = router;

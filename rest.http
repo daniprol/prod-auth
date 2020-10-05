@@ -1,5 +1,9 @@
 GET http://localhost:3000
 
+### Normal GET request with authorization
+GET http://localhost:3000
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDE3MzAyMjYsImV4cCI6MTYwMTczMDI0MSwiYXVkIjoiNWY3ODZiNTMwZTJlMDMzM2Y4YTE3ZmQ3IiwiaXNzIjoiRGFuaSBQcm9sIHdlYnNpdGUifQ.JcRxdhqG1KHCf63M9Kv3px7lG4yCLAZVQhgekXlJ1wE
+
 ### 404 error
 GET http://localhost:3000/abc_xyz
 
