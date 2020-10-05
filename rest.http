@@ -2,7 +2,7 @@ GET http://localhost:3000
 
 ### Normal GET request with authorization
 GET http://localhost:3000
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDE3MzAyMjYsImV4cCI6MTYwMTczMDI0MSwiYXVkIjoiNWY3ODZiNTMwZTJlMDMzM2Y4YTE3ZmQ3IiwiaXNzIjoiRGFuaSBQcm9sIHdlYnNpdGUifQ.JcRxdhqG1KHCf63M9Kv3px7lG4yCLAZVQhgekXlJ1wE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDE5MjM0MTgsImV4cCI6MTYwMTkyMzQ0MywiYXVkIjoiNWY3ODZiNTMwZTJlMDMzM2Y4YTE3ZmQ3IiwiaXNzIjoiRGFuaSBQcm9sIHdlYnNpdGUifQ.cVH2gcDKGZqHkEiyBCkkpSUIrbSIHeisRHeqy5usWUg
 
 ### 404 error
 GET http://localhost:3000/abc_xyz
@@ -25,6 +25,11 @@ Content-Type: application/json
 }
 ### Refresh token route
 POST http://localhost:3000/auth/refresh-token
+Content-Type: application/json
+
+{
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDE5MjMzNjAsImV4cCI6MTYzMzQ4MDk2MCwiYXVkIjoiNWY3ODZiNTMwZTJlMDMzM2Y4YTE3ZmQ3IiwiaXNzIjoiRGFuaSBQcm9sIHdlYnNpdGUifQ.fZPJror7x0y8aD-XC_TdULXMPH1pSyi_4P6zfdBsT4k"
+}
 
 ### Logout route
 DELETE http://localhost:3000/auth/logout

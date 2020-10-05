@@ -81,4 +81,22 @@ module.exports = {
       });
     });
   },
+  verifyRefreshToken: (refreshToken) => {
+    return new Promise((resolve, reject) => {
+      jwt.verify(
+        refreshToken,
+        process.env.REFRESH_TOKEN_SECRET,
+        (err, payload) => {
+          // In case the refresh token is not valid
+          if (err) return reject(createError.Unauthorized());
+
+          // We extract the userId from the payload:
+          const userId = payload.aud; // The payload contains the short form of audience, i.e., "aud"
+
+          // We are not blacklisting the refresh tokens in this example
+          return resolve(userId);
+        }
+      );
+    });
+  },
 };

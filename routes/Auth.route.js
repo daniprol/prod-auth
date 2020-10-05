@@ -3,7 +3,11 @@ const router = express.Router();
 const createError = require("http-errors");
 const User = require("../models/User.model");
 const { authSchema } = require("../helpers/validation_schema");
-const { signAccessToken, signRefreshToken } = require("../helpers/jwt_helper");
+const {
+  signAccessToken,
+  signRefreshToken,
+  verifyRefreshToken,
+} = require("../helpers/jwt_helper");
 
 router.post("/register", async (req, res, next) => {
   try {
@@ -60,7 +64,19 @@ router.post("/login", async (req, res, next) => {
 });
 
 router.post("/refresh-token", async (req, res, next) => {
-  res.send("Refresh token route");
+  try {
+    const { refreshToken } = req.body;
+    if (!refreshToken) throw createError.BadRequest();
+    const userId = await verifyRefreshToken(refreshToken);
+
+    const accessToken = await signAccessToken(userId);
+    const newRefreshToken = await signRefreshToken(userId); // Note that we are creating a new refresh token each time!
+
+    res.send({ accessToken, refreshToken: newRefreshToken });
+  } catch (error) {
+    next(error);
+  }
+  // res.send("Refresh token route");
 });
 
 // NOTE that we use a DELETE request to handle the logout route because we are actually deleting the JWT token
