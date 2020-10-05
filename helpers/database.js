@@ -27,5 +27,6 @@ mongoose.connection.on("disconnected", () => {
 
 process.on("SIGINT", async () => {
   await mongoose.connection.close();
+  console.log("Closing mongoose connection before shutting down the app");
   process.exit(0); // Check that this should be a 0, normally
 });

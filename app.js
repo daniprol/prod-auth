@@ -5,6 +5,7 @@ require("dotenv").config(); // We just need this!
 // After defining the dotenv config we can require the database:
 require("./helpers/database");
 const { verifyAccessToken } = require("./helpers/jwt_helper");
+const redisClient = require("./helpers/init_redis");
 
 // Import routes
 const authRouter = require("./routes/Auth.route");
@@ -45,6 +46,14 @@ app.use((err, req, res, next) => {
   });
 });
 
+const redis = require("redis");
+redisClient.set("foo", "bar");
+redisClient.get("foo", redis.print);
+redisClient.get("foo", (err, value) => {
+  if (err) console.log(err.message);
+
+  console.log(value);
+});
 const PORT = process.env.PORT || 3000; // If the env variable can't be found use the 3000 as default
 
 app.listen(PORT, () => {
