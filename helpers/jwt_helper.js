@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const createError = require("http-errors");
+const redisClient = require("./init_redis");
 
 module.exports = {
   signAccessToken: (userId) => {
@@ -19,7 +20,7 @@ module.exports = {
           //   return reject(err);
           return reject(createError.InternalServerError()); // We don't want to send the client the error message so we create a 'custom' one to show
         }
-        resolve(token); // We send back the token
+        return resolve(token); // We send back the token
       });
     });
   },
@@ -77,7 +78,15 @@ module.exports = {
           //   return reject(err);
           return reject(createError.InternalServerError()); // We don't want to send the client the error message so we create a 'custom' one to show
         }
-        resolve(token); // We send back the token
+        // We save the refresh token in the redis store:
+        redisClient.set(userId, token, "EX", 365 * 24 * 3600, (err, reply) => {
+          if (err) {
+            console.log(err.message);
+            return reject(createError.InternalServerError());
+          }
+          return resolve(token); // Resolve the promise by sending the token back
+        });
+        // resolve(token); // We send back the token
       });
     });
   },
