@@ -8,6 +8,7 @@ const {
   signRefreshToken,
   verifyRefreshToken,
 } = require("../helpers/jwt_helper");
+const redisClient = require("../helpers/init_redis");
 
 router.post("/register", async (req, res, next) => {
   try {
@@ -81,7 +82,23 @@ router.post("/refresh-token", async (req, res, next) => {
 
 // NOTE that we use a DELETE request to handle the logout route because we are actually deleting the JWT token
 router.delete("/logout", async (req, res, next) => {
-  res.send("Logout route");
+  try {
+    const { refreshToken } = req.body;
+    if (!refreshToken) throw createError.BadRequest();
+    const userId = await verifyRefreshToken(refreshToken);
+    redisClient.del(userId, (err, value) => {
+      if (err) {
+        console.log(err.message);
+        throw createError.InternalServerError();
+      }
+      // IMPORTANT: FROM THE CLIENT SIDE WE WOULD NEED TO DELETE BOTH TOKENS FROM THE LOCAL STORAGE OR COOKIES!
+      console.log(value); // Returns '1' if the deletion was successful
+      res.sendStatus(204); // Request succeded
+    });
+  } catch (error) {
+    next(error);
+  }
+  // res.send("Logout route");
 });
 
 module.exports = router;
