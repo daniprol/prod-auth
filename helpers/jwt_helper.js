@@ -102,8 +102,19 @@ module.exports = {
           // We extract the userId from the payload:
           const userId = payload.aud; // The payload contains the short form of audience, i.e., "aud"
 
-          // We are not blacklisting the refresh tokens in this example
-          return resolve(userId);
+          redisClient.get(userId, (err, result) => {
+            if (err) {
+              console.log(err.message);
+              return reject(createError.InternalServerError());
+            }
+            if (refreshToken === result) {
+              // We are not blacklisting the tokens
+              return resolve(userId);
+            } else {
+              return reject(createError.Unauthorized());
+            }
+          });
+          // return resolve(userId);
         }
       );
     });
